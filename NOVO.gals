@@ -1,0 +1,101 @@
+#Options
+GenerateScanner = true
+GenerateParser = true
+Language = Java
+ScannerName = Lexico
+ParserName = Sintatico
+SemanticName = Semantico
+ScannerCaseSensitive = true
+ScannerTable = Full
+Input = Stream
+Parser = SLR
+#RegularDefinitions
+letras:[A-Za-z]
+numeros:[0-9]
+es: [\ ]
+ql: [\n]
+opr:[\* \- \+ = % ]
+barra:[/]
+sep:[\( \) \{ \ ;} ]
+
+
+#Tokens
+num: {numeros}+
+switch: "switch"
+if : "if"
+case: "case"
+else   : "else"
+while : "while"
+variavel  : "var"
+return  : "return"
+programa  : "programa"
+fimprograma   : "fimprograma"
+fimfuncao  : "fimfuncao"
+funcao   : "funcao"
+inteiro  :"int"
+string   :"string"
+char  :"char"
+
+: {es}
+: {ql}
+
+multiplicacao  : "*"
+mais  :"+"
+menos : "-"
+atribuicao : "="
+igualdade : "=="
+increment : "++"
+decrement : "--"
+mod  :"%"
+divisao: {barra}
+
+ap : "("
+fp : ")"
+ac : "{"
+fc : "}"
+pv : ";"
+maior: ">"
+menor: "<"
+
+
+separadores: {sep}
+operador: {opr}|{opr}{opr}
+id: {letras}({letras}|{numeros})+
+
+
+#NonTerminals
+<PROGRAMA>
+<FUNCAO>
+<ID>
+<VAR>
+<BLOCO>
+<TIPO>
+<TIPOFUNC>
+<VARFUNC>
+<IF>
+<IFELSE>
+<COMPARAR>
+<COMPARACOES>
+<OPERACAO>
+<WHILE>
+<SWITCH>
+<CASE>
+<DECLARAVAR>
+#Grammar
+<PROGRAMA> ::= programa <ID> ac <BLOCO> fc;
+<TIPO> ::= inteiro| string | char;
+<ID> ::= id;
+<FUNCAO> ::= <FUNCAO> | funcao <ID> ap <VARFUNC> fp ac <BLOCO> fc;
+<BLOCO>::=   <BLOCO> |<DECLARAVAR> | <FUNCAO>|<SWITCH>| <IF> | <IFELSE> | <WHILE> |<COMPARAR> | î;
+<VARFUNC> ::= <TIPOFUNC> id| î;
+<TIPOFUNC> ::= inteiro| string | char| î;
+<VAR>::= id | <DECLARAVAR>;
+<DECLARAVAR>::= <DECLARAVAR> <TIPO> <VAR> pv <BLOCO> |<TIPO> <VAR> atribuicao num pv  <DECLARAVAR> <BLOCO> | <TIPO> <VAR> pv<BLOCO> |<TIPO> <VAR> atribuicao num pv<BLOCO> |<TIPO> <VAR> atribuicao <VAR>pv <BLOCO>;
+<IF> ::= if ap <COMPARAR> fp ac <BLOCO> fc;
+<IFELSE> ::= <IF> else <IF>;
+<COMPARAR> ::= <VAR> <COMPARACOES> <VAR> pv |<VAR> <COMPARACOES> <VAR> <OPERACAO> <VAR> pv| num <COMPARACOES> num;
+<COMPARACOES> ::= menor | maior  | igualdade |  <VAR> mod num igualdade num | <VAR> <OPERACAO> <VAR>| num <OPERACAO> <VAR> | <VAR> <OPERACAO> num;
+<OPERACAO>::= mais | menos | multiplicacao | divisao | atribuicao | igualdade;
+<WHILE>::= while ap <COMPARAR> fp ac <BLOCO> fc;
+<SWITCH>::= switch ap <VAR> fp ac <CASE> fc;
+<CASE>::= <CASE> | case ap <COMPARAR> fp ac <BLOCO> fc;
